@@ -8,18 +8,21 @@
  */
 
 import React, {useEffect, useRef} from 'react';
-import {Animated, Easing, StyleSheet, View} from 'react-native';
+import {Animated, StyleSheet, View} from 'react-native';
 
 function App(): JSX.Element {
-  const translation = useRef(new Animated.Value(0)).current;
+  const translation = useRef(new Animated.ValueXY({y: 0, x: 0})).current;
   useEffect(() => {
-    Animated.timing(translation, {
-      toValue: 50,
-      duration: 1000,
-      delay: 200,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
+    Animated.sequence([
+      Animated.spring(translation.y, {
+        toValue: -100,
+        useNativeDriver: true,
+      }),
+      Animated.spring(translation.y, {
+        toValue: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
 
   return (
@@ -29,7 +32,7 @@ function App(): JSX.Element {
           width: 100,
           height: 100,
           backgroundColor: '#e0af0d',
-          transform: [{translateX: translation}],
+          transform: [{translateX: translation.x}, {translateY: translation.y}],
         }}
       />
     </View>
